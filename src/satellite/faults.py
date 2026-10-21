@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class FaultProfile:
-    """Injectable faults for SIL negative tests and Question 2 scenarios."""
+    """Injectable faults for SIL negative tests and slow-deployment scenarios."""
 
     # releasePanel.py never reaches the simulator (command fails to send).
     drop_release_command: bool = False

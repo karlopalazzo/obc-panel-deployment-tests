@@ -1,0 +1,12 @@
+services:
+  obc:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "2222:22"
+    environment:
+      OBC_STATE_PATH: /var/lib/obc/simulator.json
+      # Uncomment to inject SIL faults without rebuilding:
+      # OBC_FAULT_PM_REJECT: "true"
+      # OBC_FAULT_SWITCH_DELAY_MS: "3000"

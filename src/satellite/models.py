@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from time import monotonic
+from time import time
 
 from satellite.faults import FaultProfile, RuntimeFaultState
 
-# ICEYE task: panelIndex is 1..4 (1-based).
+# panelIndex is 1..4 (1-based).
 DEFAULT_PANEL_INDICES = (1, 2, 3, 4)
 
 
@@ -98,9 +98,12 @@ class SatelliteSimulator:
         return cls(panels={i: Panel(index=i) for i in indices})
 
     def tick(self) -> None:
-        now = monotonic()
+        now = time()
         for panel in self.panels.values():
             panel.tick(now)
+
+    def _panel(self, panel_index: int) -> Panel | None:
+        return self.panels.get(panel_index)
 
     def release_panel(self, panel_index: int) -> bool:
         """
@@ -124,7 +127,7 @@ class SatelliteSimulator:
 
         panel.hdrm.release()
         delay = self.nominal_switch_press_delay_ms + self.faults.switch_press_delay_ms
-        panel.schedule_switch_press_after_ms(delay, monotonic())
+        panel.schedule_switch_press_after_ms(delay, time())
         return True
 
     def get_release_status(self, panel_index: int) -> bool:
@@ -149,6 +152,3 @@ class SatelliteSimulator:
                 pressed = not pressed
 
         return pressed
-
-    def _panel(self, panel_index: int) -> Panel | None:
-        return self.panels.get(panel_index)

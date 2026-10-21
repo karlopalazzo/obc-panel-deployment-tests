@@ -1,7 +1,7 @@
 [project]
 name = "obc-panel-deployment-tests"
 version = "0.1.0"
-description = "SIL/HIL pytest tests for OBC panel deployment (ICEYE-style exercise)"
+description = "SIL/HIL pytest tests for OBC panel deployment"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
