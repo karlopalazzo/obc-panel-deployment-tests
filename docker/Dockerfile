@@ -22,7 +22,7 @@ RUN chmod +x /opt/scripts/*.py \
     && ln -sf /opt/scripts/getReleaseStatus.py /usr/local/bin/getReleaseStatus.py
 
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 EXPOSE 22
 ENTRYPOINT ["/entrypoint.sh"]
