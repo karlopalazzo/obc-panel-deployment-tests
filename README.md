@@ -28,7 +28,7 @@ One HDRM and one switch per panel for now; redundant HDRMs per panel are a futur
 
 - [x] Domain simulator + unit tests
 - [x] OBC scripts + Docker SIL (SSH)
-- [ ] Integration tests (pytest + paramiko)
+- [x] Integration tests (pytest + paramiko)
 - [ ] CI, CCSDS telemetry module, design notes (SIL/HIL scalability)
 
 ## Run unit tests
@@ -66,3 +66,20 @@ Optional SIL faults via `docker-compose.yml` environment variables:
 | `OBC_FAULT_FLIP_SWITCH_READ` | alternating FALSE/TRUE on status polls |
 
 Reset state: `docker compose down -v` and up again, or delete `simulator.json` in the container.
+
+## Integration tests (SSH)
+
+Requires the OBC container running (`docker compose up -d`).
+
+```bash
+pip install -e ".[dev]"
+pytest tests/integration -m integration
+```
+
+Unit tests only (no Docker):
+
+```bash
+pytest tests/unit -m unit
+```
+
+Optional env overrides: `OBC_SSH_HOST`, `OBC_SSH_PORT`, `OBC_SSH_USER`, `OBC_SSH_PASSWORD`.
