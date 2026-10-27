@@ -95,3 +95,8 @@ class SatelliteClient:
         raise TimeoutError(
             f"Panel {panel_index} deployment switch not TRUE within {timeout_s}s"
         )
+
+    def release_and_wait(self, panel_index: int, timeout_s: float = 2.0) -> float:
+        if not self.release_panel(panel_index=panel_index):
+            raise RuntimeError(f"Release not accepted for panel {panel_index}.")
+        return self.wait_for_deployment(panel_index=panel_index, timeout_s=timeout_s)
