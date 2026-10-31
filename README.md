@@ -1,5 +1,7 @@
 # OBC panel deployment tests
 
+[![CI](https://github.com/karlopalazzo/obc-panel-deployment-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/karlopalazzo/obc-panel-deployment-tests/actions/workflows/ci.yml)
+
 Portfolio project for satellite flight-software V&V: deploy solar panels via HDRM,
 confirm deployment with switches, tested through OBC scripts over SSH.
 
@@ -38,8 +40,10 @@ One HDRM and one deployment switch per panel for now; redundant HDRMs per panel 
 - [x] OBC scripts + Docker SIL (SSH)
 - [x] Integration tests (pytest + paramiko)
 - [x] CCSDS Space Packet module (unit tests; not coupled to SIL/OBC scripts)
-- [ ] CI (GitHub Actions)
-- [ ] Design notes (SIL/HIL scalability, traceability table)
+- [x] CI (GitHub Actions)
+- [x] Design notes ([DESIGN.md](DESIGN.md): SIL/HIL, traceability, scalability)
+
+See **[DESIGN.md](DESIGN.md)** for verification strategy, requirements traceability, and known limitations.
 
 ## Project layout
 
@@ -144,5 +148,14 @@ packet = build_telemetry_packet(apid=0x42, sequence_count=1, user_data=b"\x01\x0
 SpacePacket.unpack(packet.pack())
 ```
 
-PUS/CSP and ground-segment integration are future work.
+PUS/CSP and ground-segment integration are future work (see [DESIGN.md](DESIGN.md)).
+
+## Continuous integration
+
+On push/PR to `main`, GitHub Actions runs:
+
+1. **Unit tests** — `pytest tests/unit -m unit`
+2. **Integration tests** — `docker compose up --build -d`, then `pytest tests/integration -m integration`
+
+Workflow file: [.github/workflows/ci.yml](.github/workflows/ci.yml)
 
