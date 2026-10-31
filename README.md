@@ -37,7 +37,7 @@ One HDRM and one deployment switch per panel for now; redundant HDRMs per panel 
 - [x] Domain simulator + unit tests
 - [x] OBC scripts + Docker SIL (SSH)
 - [x] Integration tests (pytest + paramiko)
-- [ ] CCSDS telemetry module (unit tests)
+- [x] CCSDS Space Packet module (unit tests; not coupled to SIL/OBC scripts)
 - [ ] CI (GitHub Actions)
 - [ ] Design notes (SIL/HIL scalability, traceability table)
 
@@ -45,6 +45,7 @@ One HDRM and one deployment switch per panel for now; redundant HDRMs per panel 
 
 ```text
 src/satellite/          models, faults, persistence, ssh_client
+src/satellite/telemetry/  CCSDS Space Packet pack/unpack (standalone)
 obc/scripts/            OBC CLI scripts (also copied into Docker image)
 docker/                 Dockerfile, entrypoint
 tests/unit/             simulator, OBC scripts via subprocess
@@ -130,3 +131,18 @@ SSH connection overrides: `OBC_SSH_HOST`, `OBC_SSH_PORT`, `OBC_SSH_USER`, `OBC_S
 
 - HDRM release, PM reject, delayed switch, partial multi-panel deployment
 - OBC scripts via subprocess with shared `OBC_STATE_PATH` (multi-process behaviour)
+- CCSDS Space Packet: roundtrip, fixed hex fixture, truncated buffer / payload
+
+## CCSDS Space Packet (standalone telemetry layer)
+
+Minimal **CCSDS 133.0-B primary header** (6 octets) + user data field. This module is **independent** of the Docker OBC deploy path (no TC/TM over SSH yet). It supports V&V-style unit tests on binary telemetry layout (APID, sequence count, length, parse errors).
+
+```python
+from satellite.telemetry import build_telemetry_packet, SpacePacket
+
+packet = build_telemetry_packet(apid=0x42, sequence_count=1, user_data=b"\x01\x02")
+SpacePacket.unpack(packet.pack())
+```
+
+PUS/CSP and ground-segment integration are future work.
+
